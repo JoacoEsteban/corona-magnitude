@@ -1,8 +1,11 @@
 import './styles/entry.scss'
 import App from './svelte/App.svelte';
+import _ from 'lodash'
+window._ = _
+
 import axios, { AxiosInstance } from 'axios'
-import Numbers from './services/numbers.service'
 window.axios = axios.create()
+
 
 const app = new App({
   target: document.body,
@@ -12,3 +15,11 @@ const app = new App({
 });
 
 export default app;
+
+// ------------------------------------------
+
+import NumbersService from './services/numbers.service'
+
+;(async () => {
+  await NumbersService.setup()
+})()
