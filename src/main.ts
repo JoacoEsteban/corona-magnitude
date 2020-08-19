@@ -1,25 +1,19 @@
 import './styles/entry.scss'
+import axios, { AxiosInstance } from 'axios'
+window.axios = axios.create()
+console.log(window.axios)
+import NumbersService from './services/numbers.service'
 import App from './svelte/App.svelte';
 import _ from 'lodash'
 window._ = _
 
-import axios, { AxiosInstance } from 'axios'
-window.axios = axios.create()
+NumbersService.setup()
 
 
 const app = new App({
   target: document.body,
   props: {
-    // name: 'Pancho'
   }
 });
 
 export default app;
-
-// ------------------------------------------
-
-import NumbersService from './services/numbers.service'
-
-;(async () => {
-  await NumbersService.setup()
-})()

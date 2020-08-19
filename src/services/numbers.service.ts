@@ -1,4 +1,6 @@
-type CoronaDay = {
+import _ from 'lodash'
+
+export type CoronaDay = {
   date: Date;
   confirmed: number;
   deaths: number;
@@ -10,33 +12,41 @@ type CoronaDay = {
   }
 }
 
-type CoronaCountry = CoronaDay[]
+export type CoronaCountry = CoronaDay[]
 
-type CoronaCountries = {
+export type CoronaCountries = {
   [key: string]: CoronaCountry
 }
 
 // ------------------------------------------
 
-type Country = {
+export type Country = {
   name: string;
   population: number;
   flag: string;
 }
 
-type Countries = Country[]
+export type Countries = Country[]
 
 // ------------------------------------------
-type FormattedCountry = {
+export type FormattedCountry = {
   data: Country;
   stats: CoronaCountry;
 }
 
-type FormattedCountries = {
+export type FormattedCountries = {
   [key: string]: FormattedCountry
 }
 
+export type CountryDay = {
+  data: Country;
+  stats: CoronaDay;
+}
+
 class NumbersService {
+  private static queries = []
+  private static mounted = false
+
   private static statistics: CoronaCountries
   private static countries: Countries
   private static formattedCountries: FormattedCountries
@@ -56,11 +66,38 @@ class NumbersService {
     return (await window.axios.get(this.BASE_URLS.countries))?.data || null
   }
 
-  static getAll (): FormattedCountries {
-    return this.formattedCountries
+
+  static clearRemainingQueries (): void {
+    while (this.queries.length) this.queries.splice(0, 1)[0]()
   }
-  static getCountry (name: string): FormattedCountry | null {
+
+
+  static getAll (): Promise<FormattedCountries> {
+    return new Promise(resolve => {
+      const fn = () => resolve(this.formattedCountries)
+      if (!this.mounted) this.queries.push(fn)
+      else fn()
+    })
+  }
+  static getCountry (name: string, date?: Date): FormattedCountry | null {
     return this.formattedCountries[name.toLowerCase()] || null
+  }
+
+  static async getCountryStats (name: string, date?: Date): Promise<CountryDay | null> {
+    return new Promise(resolve => {
+      const value = () => {
+        const country = this.getCountry(name)
+
+        return country && {
+          data: country.data,
+          stats: date ? country.stats.find(day => day.date === date) : _.last(country.stats)
+        }
+      }
+      const fn = () => resolve(value())
+
+      if (!this.mounted) this.queries.push(fn)
+      else fn()
+    })
   }
 
   private static formatNumbers () {
@@ -94,6 +131,8 @@ class NumbersService {
     
     this.formattedCountries = mixed
     this.formatNumbers()
+    this.mounted = true
+    this.clearRemainingQueries()
   }
 
 }

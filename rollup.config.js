@@ -51,6 +51,7 @@ export default {
     }),
     scss({
       watch: 'src/styles',
+      output: 'public/build/global.css'
     }),
     // If you have external dependencies installed from
     // npm, you'll most likely need these plugins. In
