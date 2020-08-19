@@ -5,7 +5,8 @@
 
   let numbers: CountryDay = null
   const init = async () => {
-    numbers = await NumbersService.getCountryStats('argentina')
+    numbers = await NumbersService.getCountryStats('us')
+    console.log(NumbersService.getAll())
   }
 
   init()

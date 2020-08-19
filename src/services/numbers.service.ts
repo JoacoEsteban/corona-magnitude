@@ -24,6 +24,8 @@ export type Country = {
   name: string;
   population: number;
   flag: string;
+  alpha2Code: string;
+  alpha3Code: string;
 }
 
 export type Countries = Country[]
@@ -122,7 +124,11 @@ class NumbersService {
 
     for (const name in statistics) {
       const _name = name.toLowerCase().replace(/ |\*/g, '')
-      const country = countries.find(c => c.name.toLowerCase().replace(/ /g, '').includes(_name))
+      const country = countries.find(c => {
+        const __name = c.name.toLowerCase().replace(/ /g, '')
+        // _name === 'us' && console.log(_name, c.alpha2Code.toLowerCase())
+        return __name === _name || _name === c.alpha2Code.toLowerCase()
+      })
       country && (mixed[name.toLowerCase()] = {
         stats: statistics[name],
         data: country
