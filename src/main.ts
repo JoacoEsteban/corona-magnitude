@@ -1,11 +1,16 @@
 import './styles/entry.scss'
+
 import axios, { AxiosInstance } from 'axios'
 window.axios = axios.create()
-console.log(window.axios)
+
 import NumbersService from './services/numbers.service'
 import App from './svelte/App.svelte';
 import _ from 'lodash'
+import $ from 'jquery'
 window._ = _
+window.$ = $
+import random from 'random'
+window.random = random
 
 NumbersService.setup()
 

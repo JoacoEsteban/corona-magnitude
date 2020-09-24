@@ -1,5 +1,10 @@
 :root {
   --body-color: #151515;
   --text-color: #fff;
-  --grid-color: #fff;
+  --grid-color: #555;
+  --cell-box-shadow: 0 0 10px 0px #0001;
+  --cell-color-infected: red;
+  --cell-color-dead: black;
+
+  --cell-spacing: .2em;
 }

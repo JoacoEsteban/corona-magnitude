@@ -1,21 +1,81 @@
 <script lang="ts">
-  import type { CountryDay } from "../services/numbers.service";
-  export let numbers: CountryDay | null;
-
+  // ---------------------METHODS---------------------
   const getCellAmount = (): number => {
-    if (!numbers) return 0;
-    const base = 10000;
-    const pop = numbers.data.population;
-    return Math.round(Math.sqrt(pop / base));
-  };
+    if (cellAmount === null) {
+      if (!numbers) return 0;
+      const base = cellPopulationValue;
+      // const pop = numbers.data.population;
+      const pop = 1000;
+      cellAmount = Math.round(Math.sqrt(pop / base));
+      rowPopulationValue = cellAmount * cellPopulationValue
+      cellAmount = cellAmount ** 2
+      element.css('--cell-amount', cellAmount)
+    }
+    return cellAmount
+  }
+
+  const getCellClass = (rowIndex: number, cellIndex: number): CellType => {
+    // console.log(rowIndex, cellIndex)
+    const cellPopulationMark = rowIndex * rowPopulationValue + (cellIndex + 1) * cellPopulationValue
+    // console.log(cellPopulationMark)
+    return CellType.dead
+  }
+
+  const onInit = (node: Element) => {
+    element = window.$(node)
+  }
+
+
+  // ---------------------DATA---------------------
+  import "../typings"
+  import { CellType } from "../typings";
+  import type { CountryDay } from "../services/numbers.service";
+  export let numbers: CountryDay | null = null;
+  export let cellAmount: number | null = null;
+  
+  export let cellPopulationValue = 20
+  export let rowPopulationValue = 0
+  let element
+  
+  const ammounts = {
+    dead: 40,
+    infected: 60
+  }
+  
+  const infected = 20
+  // ---------------------RUNTIME---------------------
+  // call somethin
 </script>
+
+<div class="grid-wrapper" use:onInit>
+  <div class="cells-container">
+    {#if numbers?.stats}
+    <div class="overlay">
+      {numbers.stats.ptg.confirmed * 100}
+      {numbers.stats.ptg.deaths * 100}
+      </div>
+      <!-- {#each Array(getCellAmount()) as itm, rowIndex} -->
+        <div class="row">
+          {#each Array(getCellAmount()) as itm, cellIndex}
+            <div class="cell {getCellClass(0, cellIndex)}">
+              <!-- {numbers.data.population} -->
+              <!-- {index} -->
+            </div>
+          {/each}
+        </div>
+      <!-- {/each} -->
+    {/if}
+  </div>
+</div>
 
 <style lang="scss">
   .grid-wrapper {
     margin: auto;
     color: black;
+    padding: var(--cell-spacing);
 
-    $size: 50em;
+    --grid-size: 50em;
+    $size: var(--grid-size);
     $max-size: 75vmax;
 
     height: $size;
@@ -37,13 +97,33 @@
   }
   .row {
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
-    height: 100%;
+    // height: 100%;
   }
   .cell {
     // margin: 0 1em;
-    width: 100%;
-    border: 1px solid #777;
+    --_size: calc(var(--cell-amount) / var(--grid-size));
+    width: var(--_size);
+    height: var(--_size);
+    // border: 1px solid #777;
+    padding: var(--cell-spacing);
+    &.infected {
+      --CELL-COLOR: var(--cell-color-infected);
+    }
+    &.dead {
+      --CELL-COLOR: var(--cell-color-dead);
+    }
+    &::after {
+      content: '';
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background-color: var(--CELL-COLOR);
+      box-shadow: var(--cell-box-shadow);
+      border-radius: .5em;
+    }
   }
 
 
@@ -59,39 +139,5 @@
       width: var(--_width);
       height: var(--_height);
     }
-    &.infecteds {
-      // background-color: green;
-      --overlay-background: green;
-      --_width: var(--infected-width);
-      --_height: var(--infected-height);
-    }
-    &.deaths {
-      --_width: var(--death-width);
-      --_height: var(--death-height);
-    }
   }
 </style>
-
-<div class="grid-wrapper">
-  <div class="cells-container">
-    {#if numbers?.stats}
-      <div class="overlay infecteds">
-        {numbers.stats.ptg.confirmed * 100}
-        {numbers.stats.ptg.deaths * 100}
-      </div>
-      <div class="overlay deaths">
-        <!-- {numbers.stats.ptg.deaths} -->
-      </div>
-      {#each Array(getCellAmount()) as index}
-        <div class="row">
-          {#each Array(getCellAmount()) as itm, index}
-            <div class="cell">
-              <!-- {numbers.data.population} -->
-              <!-- {index} -->
-            </div>
-          {/each}
-        </div>
-      {/each}
-    {/if}
-  </div>
-</div>

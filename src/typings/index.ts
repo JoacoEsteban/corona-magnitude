@@ -10,5 +10,15 @@ declare global {
     axios: AxiosInstance;
     _: LoDashStatic;
     store: ApplicationStore;
+    random: {
+      boolean: () => boolean
+    };
+    $: JQueryStatic
   }
+}
+
+export enum CellType {
+  infected = 'infected',
+  dead = 'dead',
+  healthy = 'healthy'
 }

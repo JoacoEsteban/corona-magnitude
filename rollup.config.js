@@ -1,36 +1,36 @@
-import svelte from 'rollup-plugin-svelte';
+import svelte from 'rollup-plugin-svelte'
 import scss from 'rollup-plugin-scss'
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import livereload from 'rollup-plugin-livereload';
-import { terser } from 'rollup-plugin-terser';
-import sveltePreprocess from 'svelte-preprocess';
-import typescript from '@rollup/plugin-typescript';
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import livereload from 'rollup-plugin-livereload'
+import { terser } from 'rollup-plugin-terser'
+import sveltePreprocess from 'svelte-preprocess'
+import typescript from '@rollup/plugin-typescript'
 
-const production = !process.env.ROLLUP_WATCH;
+const production = !process.env.ROLLUP_WATCH
 
 function serve() {
-  let server;
+  let server
   
   function toExit() {
-    if (server) server.kill(0);
+    if (server) server.kill(0)
   }
 
   return {
     writeBundle() {
-      if (server) return;
+      if (server) return
       server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
         stdio: ['ignore', 'inherit', 'inherit'],
         shell: true
-      });
+      })
 
-      process.on('SIGTERM', toExit);
-      process.on('exit', toExit);
+      process.on('SIGTERM', toExit)
+      process.on('exit', toExit)
     }
   };
 }
 
-export default {
+const client = {
   input: 'src/main.ts',
   output: {
     sourcemap: true,
@@ -80,4 +80,14 @@ export default {
   watch: {
     clearScreen: false
   }
-};
+}
+
+const server = {
+  plugins: [
+    svelte({
+      preprocess: sveltePreprocess(),
+    }),
+  ]
+}
+const config = production ? client : { client, server }
+export default client

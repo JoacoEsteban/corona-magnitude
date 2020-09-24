@@ -1,6 +1,23 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
-
   "include": ["src/**/*"],
   "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/typings"
+    ],
+    "paths": {
+      // "@/*": [
+      //   "src/*"
+      // ],
+      "@@/*": [
+        "./*"
+      ],
+      "@@types": [
+        "src/typings"
+      ]
+    },
+  }
 }
