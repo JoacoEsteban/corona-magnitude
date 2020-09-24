@@ -1,6 +1,13 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import logo from '../../assets/logo.svg';
+import '../styles/App.css';
+
+import NumbersService from '../../services/data.service'
+
+;(async () => {
+  await NumbersService.setup()
+  console.log(NumbersService.getCountryStats('us'))
+})()
 
 function App() {
   return (
