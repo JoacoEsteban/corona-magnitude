@@ -2,14 +2,15 @@ import axios from 'axios'
 import _ from 'lodash'
 
 export type CoronaDay = {
-  date: Date;
-  confirmed: number;
-  deaths: number;
-  recovered: number;
+  date: Date
+  confirmed: number
+  deaths: number
+  recovered: number
+  population: number
   ptg: {
-    confirmed: number;
-    deaths: number;
-    recovered: number;
+    confirmed: number
+    deaths: number
+    recovered: number
   }
 }
 
@@ -22,19 +23,19 @@ export type CoronaCountries = {
 // ------------------------------------------
 
 export type Country = {
-  name: string;
-  population: number;
-  flag: string;
-  alpha2Code: string;
-  alpha3Code: string;
+  name: string
+  population: number
+  flag: string
+  alpha2Code: string
+  alpha3Code: string
 }
 
 export type Countries = Country[]
 
 // ------------------------------------------
 export type FormattedCountry = {
-  data: Country;
-  stats: CoronaCountry;
+  data: Country
+  stats: CoronaCountry
 }
 
 export type FormattedCountries = {
@@ -42,12 +43,12 @@ export type FormattedCountries = {
 }
 
 export type CountryDay = {
-  data: Country | null;
-  stats: CoronaDay | null;
+  data: Country | null
+  stats: CoronaDay | null
 }
 
 class NumbersService {
-  private static queries:[() => void]|[] = []
+  private static queries: Array<() => void> = []
   private static mounted = false
 
   private static statistics: CoronaCountries
@@ -55,38 +56,38 @@ class NumbersService {
   private static formattedCountries: FormattedCountries
 
   private static BASE_URLS: {
-    statistics: string;
-    countries: string;
+    statistics: string
+    countries: string
   } = {
-    statistics: 'https://pomber.github.io/covid19/timeseries.json',
-    countries: 'https://restcountries.eu/rest/v2/'
-  }
+      statistics: 'https://pomber.github.io/covid19/timeseries.json',
+      countries: 'https://restcountries.eu/rest/v2/'
+    }
   // ---------
-  private static async getAllStatistics (): Promise<CoronaCountries | null> {
+  private static async getAllStatistics(): Promise<CoronaCountries | null> {
     return (await axios.get(this.BASE_URLS.statistics))?.data || null
   }
-  private static async getAllCountries (): Promise<Countries | null>  {
+  private static async getAllCountries(): Promise<Countries | null> {
     return (await axios.get(this.BASE_URLS.countries))?.data || null
   }
 
 
-  static clearRemainingQueries (): void {
+  static clearRemainingQueries(): void {
     while (this.queries.length) this.queries.splice(0, 1)[0]()
   }
 
 
-  static getAll (): Promise<FormattedCountries> {
+  static getAll(): Promise<FormattedCountries> {
     return new Promise(resolve => {
       const fn = () => resolve(this.formattedCountries)
       if (!this.mounted) this.queries.push(fn)
       else fn()
     })
   }
-  static getCountry (name: string, date?: Date): FormattedCountry | null {
+  static getCountry(name: string, date?: Date): FormattedCountry | null {
     return this.formattedCountries[name.toLowerCase()] || null
   }
 
-  static async getCountryStats (name: string, date?: Date): Promise<CountryDay | null> {
+  static async getCountryStats(name: string, date?: Date): Promise<CountryDay | null> {
     return new Promise(resolve => {
       const value = (): CountryDay | null => {
         const country = this.getCountry(name)
@@ -103,25 +104,28 @@ class NumbersService {
     })
   }
 
-  private static formatNumbers () {
+  private static formatNumbers() {
     for (const name in this.formattedCountries) {
       const country = this.formattedCountries[name]
       const population = country.data.population
       country.stats.forEach(stat => {
+        stat.population = population
         stat.ptg = {
           confirmed: stat.confirmed / population,
           deaths: stat.deaths / population,
-          recovered: stat.recovered / population
+          recovered: stat.recovered / population,
         }
-      });
+      })
     }
   }
 
-  static async setup () {
+  static async setup() {
     const statistics = await this.getAllStatistics()
     const countries = await this.getAllCountries()
 
-    const mixed = {}
+    const mixed: {
+      [key: string]: FormattedCountry
+    } = {}
 
     for (const name in statistics) {
       const _name = name.toLowerCase().replace(/ |\*/g, '')
@@ -135,7 +139,7 @@ class NumbersService {
         data: country
       })
     }
-    
+
     this.formattedCountries = mixed
     this.formatNumbers()
     this.mounted = true
