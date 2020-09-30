@@ -28,6 +28,7 @@ export type Country = {
   flag: string
   alpha2Code: string
   alpha3Code: string
+  normalizedKey: string
 }
 
 export type Countries = Country[]
@@ -35,7 +36,7 @@ export type Countries = Country[]
 // ------------------------------------------
 export type FormattedCountry = {
   data: Country
-  stats: CoronaCountry
+  stats: CoronaCountry,
 }
 
 export type FormattedCountries = {
@@ -134,10 +135,14 @@ class NumbersService {
         // _name === 'us' && console.log(_name, c.alpha2Code.toLowerCase())
         return __name === _name || _name === c.alpha2Code.toLowerCase()
       })
-      country && (mixed[name.toLowerCase()] = {
-        stats: statistics[name],
-        data: country
-      })
+      if (country) {
+        country.normalizedKey = name.toLowerCase()
+
+          ; (mixed[name.toLowerCase()] = {
+            stats: statistics[name],
+            data: country,
+          })
+      }
     }
 
     this.formattedCountries = mixed

@@ -590,6 +590,25 @@ video {
   height: auto;
 }
 
+h1 {
+  font-size: 1.5rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+}
+
+h3 {
+  font-size: 1.125rem;
+}
+
+a {
+  --text-opacity: 1;
+  color: #3182ce;
+  color: rgba(49, 130, 206, var(--text-opacity));
+  text-decoration: underline;
+}
+
 .container {
   width: 100%;
 }

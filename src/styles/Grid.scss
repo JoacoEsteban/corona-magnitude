@@ -2,23 +2,37 @@
   padding: 1em;
   .grid-container {
     margin: auto;
-    $size: 50em;
-    @media(max-width: $size) {
+    $grid-size: 50em;
+    @media(max-width: $grid-size) {
       font-size: 1.5vw;
     }
-    max-width: $size;
-    max-height: $size;
+    width: $grid-size;
+    max-width: $grid-size;
+    min-width: $grid-size;
+    height: $grid-size;
+    max-height: $grid-size;
+    min-height: $grid-size;
     outline: 1px solid red;
 
     .cell {
-      $size: 1em;
+      $size: .9em;
       border: .2em solid black;
-      background: white;
+      background-color: #333;
       width: $size;
+      min-width: $size;
+      max-width: $size;
       height: $size;
+      min-height: $size;
+      max-height: $size;
       display: flex;
       justify-content: center;
       align-items: center;
+      &.infected {
+        background-color: #4f4;
+      }
+      &.dead {
+        background-color: #a00;
+      }
     }
     .row {
     }
