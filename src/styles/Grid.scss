@@ -1,17 +1,19 @@
+@import 'vars';
 .grid-wrapper {
   padding: 1em;
   .grid-container {
     margin: auto;
-    $grid-size: 50em;
+    $grid-size: $container-max-w;
     @media(max-width: $grid-size) {
       font-size: 1.5vw;
     }
-    width: $grid-size;
-    max-width: $grid-size;
-    min-width: $grid-size;
-    height: $grid-size;
-    max-height: $grid-size;
-    min-height: $grid-size;
+    // width: $grid-size;
+    // max-width: $grid-size;
+    // min-width: $grid-size;
+    // height: $grid-size;
+    // max-height: $grid-size;
+    // min-height: $grid-size;
+    width: fit-content;
     outline: 1px solid red;
 
     .cell {

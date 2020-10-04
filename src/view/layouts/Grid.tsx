@@ -53,14 +53,15 @@ class Grid extends React.Component<IProps> {
           {
             this.times(this.rowAmount).map((e, rowI) => (
               <div className="row flex" key={rowI}>
-                {this.times(this.rowAmount).map((e, cellI) => (
-                  // {classes = cx({infected: rowI <= this.infected})}
-                  <div className={'cell ' + cx({
-                    infected: rowI < this.infectedCellIndex && cellI < this.infectedCellIndex,
-                    dead: rowI < this.deadCellIndex && cellI < this.deadCellIndex,
-                  })} key={cellI}>
-                  </div>
-                ))}
+                {
+                  this.times(this.rowAmount).map((e, cellI) => (
+                    <div className={'cell ' + cx({
+                      infected: rowI < this.infectedCellIndex && cellI < this.infectedCellIndex,
+                      dead: rowI < this.deadCellIndex && cellI < this.deadCellIndex,
+                    })} key={cellI}>
+                    </div>
+                  ))
+                }
               </div>
             ))
           }
